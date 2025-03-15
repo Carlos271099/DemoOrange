@@ -1,0 +1,8 @@
+He finalizado la primer parte de mi test que es la creacion del usuario
+he realizado multiples validaciones para esta prueba se toman capturas de pantalla
+y se añaden al reporte, si algo falla donde sea que suceda se documenta y se tomar captura..
+
+La integracion de estos reportes es con extentReports, se usa una suite de testng
+Una disculpa por mi ingles en los comentarios del codigo...
+Ya con esto es buena base, para realizar lo restante ya solamente es reutilizar gran parte
+de lo que tenemos y agregar unas cuantas validaciones.

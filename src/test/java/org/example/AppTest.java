@@ -1,6 +1,10 @@
 package org.example;
 
 
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import org.example.utils.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -9,6 +13,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -16,36 +22,49 @@ import java.time.Duration;
 
 public class AppTest{
 
+    public static WebDriver driver = new FirefoxDriver();
+
     @Test(description = "Test for create a new user employee using admin account")
     public void CreateUserEmployee() throws IOException {
+    //This test we just call those methods validations and other stuff are inside those methods.
+    //Remember, to execute this test we need to execute "testng.xml" located in a package
+        //called "testSuites" and reports are stored in a folder called reports inside of the project this
+        //later gonna be moved outside of the project.
 
-        //Create a new Instance of WebDriver
-        WebDriver driver = new FirefoxDriver();
         //Go to test page
         driver.navigate().to("https://opensource-demo.orangehrmlive.com/");
-        //We have to wait until we can see for both user & password inputs
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//div[@class='orangehrm-login-slot']")));
-
 
         //Read & Obtain user & pass from config.properties
-        String user = ReadProperties.getUserName();
-        String pass = ReadProperties.getUserPass();
-        //Use method logIn to access
-        Login.logIn(user,pass,driver);
-        //Method to validate a successful login
-        ValidateLogin.validate(driver);
-        //Access to admin Module
-        AccessToModule.adminModule(driver);
-        //Access to submodule add system user
-        AccessToSubModule.addSystemUser(driver);
-        try {
-            Thread.sleep(4000);
-        }catch(InterruptedException e){
-            e.printStackTrace();
-        }
-        driver.quit();
+        String user = ReadProperties.getUserNameAdmin();
+        String pass = ReadProperties.getUserPassAdmin();
 
+        //Use method logIn to access
+        Login.logIn(user,pass,driver,Listeners.test);
+
+        //Access to admin Module
+        AccessToModule.adminModule(driver,Listeners.test);
+
+        //Access to submodule add system user
+        AccessToSubModule.addSystemUser(driver,Listeners.test);
+
+        Delay.delay(3000);
+        AddNewUserEmployee.addNew(driver,Listeners.test);
+
+        Delay.delay(5000);
+
+        //Logout after finish test
+        Logout.logout(driver);
+        //validate that we are out of that page
+        Validations.validateLogout(driver,Listeners.test);
+
+
+    }
+
+
+
+    @AfterTest
+    public void tearDown(){
+        driver.quit();
     }
 
 }
